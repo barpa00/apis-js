@@ -15,44 +15,88 @@
       // Data from: https://data.giss.nasa.gov/gistemp/
       // Mean from: https://earthobservatory.nasa.gov/world-of-change/DecadalTemp
 
-      window.addEventListener('load', setup);
-
-      async function setup() {
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const globalTemps = await getData();
-        const myChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: globalTemps.years,
-            datasets: [
-              {
-                label: 'Temperature in °C',
-                data: globalTemps.temps,
-                fill: false,
-                borderColor: 'rgba(255, 99, 132, 1)',
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                borderWidth: 1
+      // window.addEventListener('load', setup);
+      
+      showChart()
+      // chart js 
+      async function showChart (){
+        const data = await getdata()
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labelX,
+          datasets: [{
+            label: 'HELLO CHART',
+            data: data.labelY,
+            fill: false,
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            hoverBackgroundColor: 'rgb(3, 64, 145)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+                beginAtZero: true
               }
-            ]
-          },
-          options: {}
+            }
+          }
         });
       }
-
-      async function getData() {
-        // const response = await fetch('testdata.csv');
+        
+      async function getdata() {
+        const labelX = []
+        const labelY = []
         const response = await fetch('ZonAnn.Ts+dSST.csv');
-        const data = await response.text();
-        const years = [];
-        const temps = [];
-        const rows = data.split('\n').slice(1);
-        rows.forEach(row => {
-          const cols = row.split(',');
-          years.push(cols[0]);
-          temps.push(14 + parseFloat(cols[1]));
-        });
-        return { years, temps };
+        const data = await response.text()
+        const rows = data.split("\n").slice(1)
+        const years = []
+        rows.forEach( elt => {
+          const row = elt.split(",")
+          labelX.push(row[0])
+          labelY.push(parseFloat(row[1])+14)
+        })
+        return { labelY,labelX }
       }
+      
+      // async function setup() {
+      //   const ctx = document.getElementById('myChart').getContext('2d');
+      //   const globalTemps = await getData();
+      //   const myChart = new Chart(ctx, {
+      //     type: 'line',
+      //     data: {
+      //       labels: globalTemps.years,
+      //       datasets: [
+      //         {
+      //           label: 'Temperature in °C',
+      //           data: globalTemps.temps,
+      //           fill: false,
+      //           borderColor: 'rgba(255, 99, 132, 1)',
+      //           backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      //           borderWidth: 1
+      //         }
+      //       ]
+      //     },
+      //     options: {}
+      //   });
+      // }
+
+      // async function getData() {
+      //   // const response = await fetch('testdata.csv');
+      //   const response = await fetch('ZonAnn.Ts+dSST.csv');
+      //   const data = await response.text();
+      //   const years = [];
+      //   const temps = [];
+      //   const rows = data.split('\n').slice(1);
+      //   rows.forEach(row => {
+      //     const cols = row.split(',');
+      //     years.push(cols[0]);
+      //     temps.push(14 + parseFloat(cols[1]));
+      //   });
+      //   return { years, temps };
+      // }
     </script>
   </body>
 </html>
